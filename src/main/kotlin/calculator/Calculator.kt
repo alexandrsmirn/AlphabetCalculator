@@ -10,11 +10,25 @@ class Calculator(firstRow: String) { //TODO: мб сделать не в кон�
 
     init {
         previousRow = firstRow
+        letterOrder.add(firstRow[0])
+        val firstLetterIndex = firstRow[0].toInt() - 'a'.toInt()
+        usedCharacters[firstLetterIndex] = true
+    }
+
+    fun getAlphabet(): String {
+        for (characterIndex in 0..25) {
+            if (!usedCharacters[characterIndex]) {
+                val character = (characterIndex + 'a'.toInt()).toChar()
+                letterOrder.add(character)
+            }
+        }
+        return letterOrder.joinToString(separator = ", ")
     }
 
     /**Determines if the alphabetic order keeps after proceeding current row*/
     fun proceedRow(currentRow: String) : Boolean {
         val (previousLetter, currentLetter) = getFirstMismatchChar(previousRow, currentRow)
+        previousRow = currentRow
 
         when {
             currentLetter == '_'  -> return false
@@ -27,7 +41,7 @@ class Calculator(firstRow: String) { //TODO: мб сделать не в кон�
             letterOrder.addAfterLetter(previousLetter, currentLetter)
             true
         } else {
-            letterOrder.checkLetter(previousLetter, currentLetter)
+            letterOrder.checkLettersOrder(previousLetter, currentLetter)
         }
     }
 
@@ -35,12 +49,12 @@ class Calculator(firstRow: String) { //TODO: мб сделать не в кон�
     private fun getFirstMismatchChar(firstString: String, secondString: String): Pair<Char, Char> {
         for (i in firstString.indices) {
             if (i == secondString.length) {                  //if the secondString is a substring of the firstString
-                return Pair(firstString[i], ' ')             //TODO: сделать красивее
+                return Pair(firstString[i], '_')             //TODO: сделать красивее
             } else if (secondString[i] != firstString[i]) {
                 return Pair(firstString[i], secondString[i])
             }
         }
         //if the firstString is a substring of the secondString
-        return Pair(' ', secondString[firstString.length])
+        return Pair('_', secondString[firstString.length])
     }
 }
