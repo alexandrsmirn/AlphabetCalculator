@@ -1,12 +1,13 @@
 package calculator
 
-import java.util.*
 import calculator.letters.LetterList
 
 class Calculator(firstRow: String) { //TODO: мб сделать не в конструкторе а при первом вызове proceedRow
     private val usedCharacters: BooleanArray = BooleanArray(26) { false }
     private var previousRow: String
     private val letterOrder: LetterList = LetterList()
+    val alphabetString: String
+        get() = this.generateAlphabetString()
 
     init {
         previousRow = firstRow
@@ -15,7 +16,7 @@ class Calculator(firstRow: String) { //TODO: мб сделать не в кон�
         usedCharacters[firstLetterIndex] = true
     }
 
-    fun getAlphabet(): String {
+    private fun generateAlphabetString(): String {
         for (characterIndex in 0..25) {
             if (!usedCharacters[characterIndex]) {
                 val character = (characterIndex + 'a'.toInt()).toChar()

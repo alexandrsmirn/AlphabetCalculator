@@ -15,5 +15,5 @@ fun main() {
         //previousRow = currentRow
     }
 
-    println(alphabetCalculator.getAlphabet())
+    println(alphabetCalculator.alphabetString)
 }
