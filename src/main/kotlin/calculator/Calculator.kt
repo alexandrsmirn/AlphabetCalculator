@@ -2,19 +2,11 @@ package calculator
 
 import calculator.letters.LetterList
 
-class Calculator(firstRow: String) { //TODO: мб сделать не в конструкторе а при первом вызове proceedRow
+class Calculator {
     private val usedCharacters: BooleanArray = BooleanArray(26) { false }
-    private var previousRow: String
     private val letterOrder: LetterList = LetterList()
     val alphabetString: String
         get() = this.generateAlphabetString()
-
-    init {
-        previousRow = firstRow
-        letterOrder.add(firstRow[0])
-        val firstLetterIndex = firstRow[0].toInt() - 'a'.toInt()
-        usedCharacters[firstLetterIndex] = true
-    }
 
     private fun generateAlphabetString(): String {
         for (characterIndex in 0..25) {
@@ -26,24 +18,47 @@ class Calculator(firstRow: String) { //TODO: мб сделать не в кон�
         return letterOrder.joinToString(separator = ", ")
     }
 
-    /**Determines if the alphabetic order keeps after proceeding current row*/
-    fun proceedRow(currentRow: String) : Boolean {
+    /**Determines if the alphabetic order keeps after adding currentRow*/
+    fun proceedRows(previousRow: String, currentRow: String) : Boolean {
         val (previousLetter, currentLetter) = getFirstMismatchChar(previousRow, currentRow)
-        previousRow = currentRow
 
         when {
             currentLetter == '_'  -> return false
             previousLetter == '_' -> return true
         }
 
-        val currentLetterIndex = currentLetter.toInt() - 'a'.toInt()
-        return if (!usedCharacters[currentLetterIndex]) {
-            usedCharacters[currentLetterIndex] = true
+        //val currentLetterIndex = currentLetter.toInt() - 'a'.toInt()
+        val letterIndex: (Char) -> Int = { letter: Char -> letter.toInt() - 'a'.toInt()}
+        if (!usedCharacters[letterIndex(currentLetter)]) {
+            if (!usedCharacters[letterIndex(previousLetter)]) {
+                usedCharacters[letterIndex(previousLetter)] = true
+                letterOrder.add(previousLetter)
+            }
+            usedCharacters[letterIndex(currentLetter)] = true
             letterOrder.addAfterLetter(previousLetter, currentLetter)
-            true
+            return true
         } else {
-            letterOrder.checkLettersOrder(previousLetter, currentLetter)
+            return letterOrder.checkLettersOrder(previousLetter, currentLetter)
         }
+
+        //первое отличие от старого
+        /*when {
+            !usedCharacters[letterIndex(previousLetter)] -> {
+                usedCharacters[letterIndex(previousLetter)] = true
+                letterOrder.add(previousLetter)
+            }
+
+            !usedCharacters[letterIndex(currentLetter)] -> {
+                usedCharacters[letterIndex(currentLetter)] = true
+                letterOrder.addAfterLetter(previousLetter, currentLetter)
+                return true
+            }
+
+            else -> {
+                letterOrder.checkLettersOrder(previousLetter, currentLetter)
+            }
+        }*/
+
     }
 
     /**Returns pair of the first different characters in strings firstString and secondString*/

@@ -1,18 +1,18 @@
 import calculator.Calculator
 
 fun main() {
-    val rowsCount: Int = readLine()?.toInt() ?:0
+    val alphabetCalculator = Calculator()
 
-    val previousRow: String = readLine()!!
-    val alphabetCalculator = Calculator(previousRow)
+    val rowsCount: Int = readLine()?.toInt() ?:0
+    var previousRow: String = readLine()!!
 
     for (rowNum in 2..rowsCount) {
         val currentRow: String = readLine()!!
-        if (!alphabetCalculator.proceedRow(currentRow)) {
+        if (!alphabetCalculator.proceedRows(previousRow, currentRow)) {
             println("Impossible")
             return
         }
-        //previousRow = currentRow
+        previousRow = currentRow
     }
 
     println(alphabetCalculator.alphabetString)
