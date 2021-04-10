@@ -1,56 +1,18 @@
 package calculator
 
-import calculator.letters.LetterList
+import calculator.letters.LetterGraph
 
 class Calculator {
-    private val usedCharacters: BooleanArray = BooleanArray(26) { false }
-    private val letterOrder: LetterList = LetterList()
-    private var hasPossibleAlphabet = true
+    private val letterGraph: LetterGraph = LetterGraph()
 
     /**Returns generated alphabet string or "Impossible" if so.*/
     val currentAlphabetString: String
-        get() = if (hasPossibleAlphabet) this.generateAlphabetString() else "Impossible"
+        get() = letterGraph.getAlphabet()
 
-    /**Generates alphabet string based on proceeded rows.*/
-    private fun generateAlphabetString(): String {
-        for (characterIndex in 0..25) {
-            if (!usedCharacters[characterIndex]) {
-                val character = (characterIndex + 'a'.toInt()).toChar()
-                letterOrder.add(character)
-            }
-        }
-        return letterOrder.joinToString(separator = " ")
-    }
-
-    /**Determines if the alphabetic order keeps after adding currentRow.*/
-    fun proceedRows(previousRow: String, currentRow: String) : Boolean {
+    /**Proceeds tho rows to determine the letter order in them.*/
+    fun proceedRows(previousRow: String, currentRow: String) {
         val (previousLetter, currentLetter) = getFirstMismatchingChars(previousRow, currentRow)
-
-        //assume '_' symbol is always the first in the alphabetic order
-        when {
-            !hasPossibleAlphabet  -> return false
-            previousLetter == '_' -> return true
-            currentLetter == '_'  -> {
-                hasPossibleAlphabet = false
-                return false
-            }
-        }
-
-        val currentLetterIndex = currentLetter.toInt() - 'a'.toInt()
-        val previousLetterIndex = previousLetter.toInt() - 'a'.toInt()
-
-        if (!usedCharacters[currentLetterIndex]) {
-            if (!usedCharacters[previousLetterIndex]) {
-                usedCharacters[previousLetterIndex] = true
-                letterOrder.add(previousLetter)
-            }
-            usedCharacters[currentLetterIndex] = true
-            letterOrder.addAfterLetter(previousLetter, currentLetter)
-        } else {
-            hasPossibleAlphabet = letterOrder.checkLettersOrder(previousLetter, currentLetter)
-        }
-
-        return hasPossibleAlphabet
+        letterGraph.addEdge(previousLetter, currentLetter)
     }
 
     /**Returns pair of the first different characters in strings firstString and secondString.*/

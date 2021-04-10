@@ -8,9 +8,7 @@ fun main() {
 
     for (rowNum in 2..rowsCount) {
         val currentRow: String = readLine()!!
-        if (!alphabetCalculator.proceedRows(previousRow, currentRow)) {
-            break
-        }
+        alphabetCalculator.proceedRows(previousRow, currentRow)
         previousRow = currentRow
     }
 

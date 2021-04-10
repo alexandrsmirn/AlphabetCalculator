@@ -78,7 +78,7 @@ internal class CalculatorTest {
     }
 
     @Test
-    fun qwe() {
+    fun graphWithTwoEdgedVertexWithoutCyclesTest() {
         val rows = arrayOf( "abcd",
                             "cbda",
                             "cbfb",
@@ -87,20 +87,22 @@ internal class CalculatorTest {
        for (i in 1 until rows.size) {
            calculator.proceedRows(rows[i - 1], rows[i])
        }
-        assertEquals("b, f, d, a, c", calculator.currentAlphabetString)
+        assertEquals("b d f a c e g h i j k l m n o p q r s t u v w x y z",
+            calculator.currentAlphabetString)
+    }
+
+    @Test
+    fun graphWithTwoEdgedVertexWithCycleTest() {
+        val rows = arrayOf( "abcd",
+                            "cbda",
+                            "cbfb",
+                            "cbfa",
+                            "cbad",
+                            "cbba" )
+        for (i in 1 until rows.size) {
+            calculator.proceedRows(rows[i - 1], rows[i])
+        }
+        assertEquals("Impossible", calculator.currentAlphabetString)
     }
 
 }
-
-/*bqwe
-abcd
-cbda
-cbfb
-cbfa//говорим что f старше a
-cbad//
-
-fbgq
-
-{b, a, c, | d, f}
-{b, a, (d), c, (f)} или {b, a, (d, f), c}
-если буквы из разных цепочек, то можем... ТОПОЛОГИЧЕСКАЯ СОРТИРОВКА*/
