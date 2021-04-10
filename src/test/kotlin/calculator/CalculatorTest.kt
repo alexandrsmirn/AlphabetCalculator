@@ -4,49 +4,103 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Assumptions
 
 internal class CalculatorTest {
+    private var calculator = Calculator()
 
     @BeforeEach
     fun setUp() {
-
+        calculator = Calculator()
     }
 
     @Test
     fun oneRowTest() {
-        val calculator = Calculator()
-        assertEquals("a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z",
-            calculator.alphabetString)
+        assertEquals("a b c d e f g h i j k l m n o p q r s t u v w x y z",
+            calculator.currentAlphabetString)
     }
 
     @Test
     fun twoStringsFirstSymbolMatchTest() {
-        val calculator = Calculator()
         calculator.proceedRows("rfirst","rsecond")
-        assertEquals("f, s, a, b, c, d, e, g, h, i, j, k, l, m, n, o, p, q, r, t, u, v, w, x, y, z",
-            calculator.alphabetString)
+        assertEquals("f s a b c d e g h i j k l m n o p q r t u v w x y z",
+            calculator.currentAlphabetString)
     }
 
     @Test
     fun firstIsSubstrOfSecondTest() {
-        val calculator = Calculator()
         calculator.proceedRows("alex","alexandr")
-        assertEquals("a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z",
-            calculator.alphabetString)
+        assertEquals("a b c d e f g h i j k l m n o p q r s t u v w x y z",
+            calculator.currentAlphabetString)
     }
 
     @Test
     fun secondIsSubstrOfFirstTest() {
-        val calculator = Calculator()
-        Assumptions.assumeFalse(calculator.proceedRows("alexandr","alex"))
+        calculator.proceedRows("alexandr","alex")
+        assertEquals("Impossible", calculator.currentAlphabetString)
     }
 
     @Test
-    fun getAlphabetString() {
+    fun threeRowsImpossibleTest() {
+        calculator.proceedRows("abc", "abb")
+        calculator.proceedRows("abb", "acb")
+        assertEquals("Impossible", calculator.currentAlphabetString)
     }
 
     @Test
-    fun proceedRow() {
+    fun threeRowsNoMatchTest() {
+        calculator.proceedRows("abc", "def")
+        calculator.proceedRows("def", "ghi")
+        assertEquals("a d g b c e f h i j k l m n o p q r s t u v w x y z",
+            calculator.currentAlphabetString)
+
     }
+
+    @Test
+    fun allLettersTest() {
+        var letter = 'b'
+        while (letter <= 'z') {
+            calculator.proceedRows((letter - 1).toString(), letter.toString())
+            letter ++
+        }
+        assertEquals("a b c d e f g h i j k l m n o p q r s t u v w x y z",
+            calculator.currentAlphabetString)
+    }
+
+    @Test
+    fun allLettersReverseTest() {
+        var letter = 'z'
+        while (letter > 'a') {
+            calculator.proceedRows(letter.toString(), (letter - 1).toString())
+            letter--
+        }
+        assertEquals("z y x w v u t s r q p o n m l k j i h g f e d c b a",
+            calculator.currentAlphabetString)
+    }
+
+    @Test
+    fun qwe() {
+        val rows = arrayOf( "abcd",
+                            "cbda",
+                            "cbfb",
+                            "cbfa",
+                            "cbad")
+       for (i in 1 until rows.size) {
+           calculator.proceedRows(rows[i - 1], rows[i])
+       }
+        assertEquals("b, f, d, a, c", calculator.currentAlphabetString)
+    }
+
 }
+
+/*bqwe
+abcd
+cbda
+cbfb
+cbfa//говорим что f старше a
+cbad//
+
+fbgq
+
+{b, a, c, | d, f}
+{b, a, (d), c, (f)} или {b, a, (d, f), c}
+если буквы из разных цепочек, то можем... ТОПОЛОГИЧЕСКАЯ СОРТИРОВКА*/

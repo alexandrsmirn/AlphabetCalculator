@@ -9,11 +9,10 @@ fun main() {
     for (rowNum in 2..rowsCount) {
         val currentRow: String = readLine()!!
         if (!alphabetCalculator.proceedRows(previousRow, currentRow)) {
-            println("Impossible")
-            return
+            break
         }
         previousRow = currentRow
     }
 
-    println(alphabetCalculator.alphabetString)
+    println(alphabetCalculator.currentAlphabetString)
 }
