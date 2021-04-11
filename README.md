@@ -1,0 +1,3 @@
+# AlphabetCalculator
+
+**Task №1**
